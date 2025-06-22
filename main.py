@@ -1,66 +1,75 @@
+"""
+FactoryMind - Forklift & Pedestrian Safety Vision System
+Developed by Amir Mobasheraghdam
+Powered by MediaPipe + OpenCV
+"""
+
 import cv2
 import mediapipe as mp
 
-# راه‌اندازی MediaPipe برای تشخیص انسان
+# Initialize MediaPipe Pose module
 mp_pose = mp.solutions.pose
 pose = mp_pose.Pose()
 mp_drawing = mp.solutions.drawing_utils
 
-# باز کردن وب‌کم
+# Open webcam
 cap = cv2.VideoCapture(0)
 cv2.namedWindow("FactoryMind", cv2.WND_PROP_FULLSCREEN)
 cv2.setWindowProperty("FactoryMind", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
-# ⚙️ تنظیمات کالیبراسیون دستی
-calibration_height = 600  # این مقدار را تنظیم کن بر اساس تست
-red_threshold = calibration_height      # خیلی نزدیک
-yellow_threshold = calibration_height * 0.6  # نسبتاً نزدیک
+# 🔧 Manual calibration (based on real-world tests)
+calibration_height = 600
+red_threshold = calibration_height              # Too close (danger)
+yellow_threshold = calibration_height * 0.6     # Medium range
 
 while True:
     ret, frame = cap.read()
     if not ret:
         break
 
-    # معکوس کردن تصویر برای نمایش بهتر
+    # Flip the frame for mirror effect
     frame = cv2.flip(frame, 1)
     height, width, _ = frame.shape
 
-    # تشخیص وضعیت بدن
+    # Run pose detection
     results = pose.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 
-    distance_color = (0, 255, 0)  # پیش‌فرض: سبز
+    # Default color = green (safe)
+    distance_color = (0, 255, 0)
 
     if results.pose_landmarks:
-        # پیدا کردن مختصات شانه‌ها برای برآورد فاصله
+        # Get shoulder landmarks to help estimate body scale
         left_shoulder = results.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_SHOULDER]
         right_shoulder = results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_SHOULDER]
 
-        # محاسبه ارتفاع فرضی بدن
+        # Estimate vertical height of the person based on pose landmarks
         y_values = [lm.y for lm in results.pose_landmarks.landmark]
-        min_y = min(y_values)
-        max_y = max(y_values)
-        person_height = (max_y - min_y) * height
+        person_height = (max(y_values) - min(y_values)) * height
 
-        # رسم استخوان‌بندی بدن
-        mp_drawing.draw_landmarks(frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+        # Draw pose landmarks
+        mp_drawing.draw_landmarks(
+            frame, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
 
-        # بر اساس ارتفاع، فاصله فرضی را مشخص کن
+        # Determine color based on estimated proximity
         if person_height > red_threshold:
-            distance_color = (0, 0, 255)  # قرمز = خیلی نزدیک
+            distance_color = (0, 0, 255)      # Red = too close
         elif person_height > yellow_threshold:
-            distance_color = (0, 255, 255)  # زرد = متوسط
+            distance_color = (0, 255, 255)    # Yellow = medium
         else:
-            distance_color = (0, 255, 0)  # سبز = دور
+            distance_color = (0, 255, 0)      # Green = safe
 
-    # رسم نوارهای کناری
+    # Draw side proximity bars
     bar_thickness = 40
     cv2.rectangle(frame, (0, 0), (bar_thickness, height), distance_color, -1)
     cv2.rectangle(frame, (width - bar_thickness, 0), (width, height), distance_color, -1)
 
+    # Show the result
     cv2.imshow("FactoryMind", frame)
 
+    # Press 'q' to quit
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
+# Cleanup
 cap.release()
 cv2.destroyAllWindows()
