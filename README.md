@@ -59,7 +59,7 @@ ForkliftAIDistanceAlert/
 ├── main.py              # Main application (LiftSafe)
 ├── assets/
 │   └── preview.png      # Optional image or GIF for demonstration
-└── LICENSE
+└── LICENSE mit Amir Mobasheraghdam
 ```
 
 ---
