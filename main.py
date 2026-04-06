@@ -9,32 +9,6 @@ import mediapipe as mp
 
 # Initialize MediaPipe Pose module
 mp_pose = mp.solutions.pose
-pose = mp_pose.Pose()
-mp_drawing = mp.solutions.drawing_utils
-
-# Open webcam
-cap = cv2.VideoCapture(0)
-cv2.namedWindow("FactoryMind", cv2.WND_PROP_FULLSCREEN)
-cv2.setWindowProperty("FactoryMind", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-
-# 🔧 Manual calibration (based on real-world tests)
-calibration_height = 600
-red_threshold = calibration_height              # Too close (danger)
-yellow_threshold = calibration_height * 0.6     # Medium range
-
-while True:
-    ret, frame = cap.read()
-    if not ret:
-        break
-
-    # Flip the frame for mirror effect
-    frame = cv2.flip(frame, 1)
-    height, width, _ = frame.shape
-
-    # Run pose detection
-    results = pose.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-
-    # Default color = green (safe)
     distance_color = (0, 255, 0)
 
     if results.pose_landmarks:
