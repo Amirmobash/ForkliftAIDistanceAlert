@@ -98,7 +98,7 @@ ForkliftAIDistanceAlert/
 
 ## 👨‍💻 Author
 
-**Amir Mobasher**  
+**Amir Mobasheraghdam**  
 - 📸 [Instagram @amirmobasher.ir](https://instagram.com/amirmobasher.ir)  
 - 🌐 [GitHub Amirmobash](https://github.com/Amirmobash)
 
