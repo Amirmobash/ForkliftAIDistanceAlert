@@ -1,5 +1,13 @@
 # Forklift AI Distance Alert — AI Forklift Safety System
 
+
+<p align="center">
+  <img src="docs/images/forklift-camera-pedestrian-distance-vision.svg" alt="Camera-based forklift pedestrian detection and proximity assistance concept" width="960" />
+</p>
+
+<sub>Illustrative engineering overview (not a photograph, measured CAD rendering, or independently verified build).</sub>
+
+
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![MediaPipe](https://img.shields.io/badge/MediaPipe-0.10.9-green)](https://google.github.io/mediapipe/)
